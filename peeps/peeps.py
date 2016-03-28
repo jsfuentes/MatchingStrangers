@@ -1,6 +1,6 @@
 import random
 class Person:
-    def _init_(self,names,times):
+    def __init__(self,names,times):
         self.name = names
         self.times = times
 
@@ -60,6 +60,6 @@ def getPeople(numOfPeeps):
         print(times)
         x = Person(name, times)
         people.append(x)
-
+    return people
 print(random.randint(0, 10))
-getPeople(10)
+getPeople(1000)
