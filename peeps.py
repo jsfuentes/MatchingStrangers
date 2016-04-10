@@ -214,6 +214,7 @@ def insertSwipersAndSwipees(peeps):
                                 newGroup = Group(neederTime, neederHall)
                                 newGroup.people.append(giver)
                                 newGroup.people.append(needer)
+                                foundGroup = True
                             peeps.remove(giver) #remove the giver and needer from every list to avoid duplicates
                             peeps.remove(needer)
                             swipers.remove(giver)
@@ -260,5 +261,5 @@ def test(people):
         for peep in group.people:
             print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls, peep.swipes)
 
-test(getPeople(10))
+test(getPeople(100))
 
