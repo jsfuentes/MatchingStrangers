@@ -36,7 +36,7 @@ availability_list = []
 people_list = []
 
 #global list of groups
-group_list = [Group(7, "De Neve")]
+group_list = [Group(5, "De Neve"), Group(6, "De Neve"), Group(7, "De Neve"), Group(5, "B-Plate"), Group(6, "B-Plate"), Group(7, "B-Plate"), Group(5, "Covel"), Group(6, "Covel"), Group(7, "Covel"), Group(8,"Covel")]
 
 #populates possible times list(MUST BE MORE THAN 3 TIMES)
 def gettimes():
