@@ -2,11 +2,13 @@ import random
 import operator
 #person with first and last name in name and time list
 class Person:
-    def __init__(self,names,times,halls, number):
+    def __init__(self,names,times,halls, number,fact,swipes):
         self.name = names
         self.times = times
         self.halls = halls
         self.number = number
+        self.fact = fact
+        self.swipes=swipes
 
     def amount_of_combos(self):
         return len(self.times)*len(self.halls)
@@ -110,7 +112,7 @@ def getPeople(numOfPeeps):
                 halls.append(hallList[rnd3])
         name = name + " " + surname
         print(name, times, halls)
-        x = Person(name, times, halls, 6616616661)
+        x = Person(name, times, halls, 6616616661,"i like pie","getonmylevel")
         people.append(x)
     return people
 
@@ -183,6 +185,8 @@ def insert_into_groups(person):
 
 def test(people):
     peeps = people
+#    random.shuffle(peeps)
+ #   random.shuffle(peeps)
     peeps.sort(key=operator.methodcaller("amount_of_combos"), reverse=False)
     createAtyList(gettimes(), gethalls())
     populateAtyList(peeps)
@@ -196,11 +200,11 @@ def test(people):
         if group.size() < 4:
             unfinished.append(group)
         for peep in group.people:
-            print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls)
+            print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls, peep.swipes)
     for group in unfinished:
-        print("GROUP at ", group.hall, group.time, ":")
+        print("INCOMPELTE GROUP at ", group.hall, group.time, ":")
         for peep in group.people:
-            print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls)
+            print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls, peep.swipes)
 
 
 
