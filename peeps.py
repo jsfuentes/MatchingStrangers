@@ -34,7 +34,7 @@ availability_list = []
 people_list = []
 
 #global list of groups
-group_list = []
+group_list = [Group(7, "De Neve")]
 
 #populates possible times list(MUST BE MORE THAN 3 TIMES)
 def gettimes():
@@ -107,7 +107,7 @@ def getPeople(numOfPeeps):
             if random.randint(0,1) == 0:
                 halls.append(hallList[rnd3])
         name = name + " " + surname
-        print(name, " wants to meet at ", times, " and halls ", halls)
+        print(name, times, halls)
         x = Person(name, times, halls)
         people.append(x)
     return people
@@ -180,18 +180,26 @@ def insert_into_groups(person):
         group_list.append(new_group)
 
 
-peeps = getPeople(60)
+peeps = getPeople(74)
 peeps.sort(key=operator.methodcaller("amount_of_combos"), reverse=False)
 createAtyList(gettimes(), gethalls())
 populateAtyList(peeps)
 for peep in peeps:
     insert_into_groups(peep)
 counter = 0
+unfinished = []
 for group in group_list:
     print("GROUP ", counter, " at ", group.hall, group.time, ":")
     counter = counter +1
+    if group.size() < 4:
+        unfinished.append(group)
     for peep in group.people:
         print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls)
+for group in unfinished:
+    print("GROUP at ", group.hall, group.time, ":")
+    for peep in group.people:
+        print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls)
+
 
 
 
