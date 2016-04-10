@@ -9,7 +9,7 @@ worksheet = workbook.sheet_by_index(0)
 # for each person
 #cell(row, column)
 people = []
-for x in range(2,139):
+for x in range(2,128):
     name = worksheet.cell(x,1).value + " " + worksheet.cell(x,2).value
     number = worksheet.cell(x,4).value
     halls = []

@@ -205,5 +205,3 @@ def test(people):
 
 
 
-
-
