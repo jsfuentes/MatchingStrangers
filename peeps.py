@@ -2,16 +2,18 @@ import random
 import operator
 #person with first and last name in name and time list
 class Person:
-    def __init__(self,names,times):
+    def __init__(self,names,times,halls):
         self.name = names
         self.times = times
-    def amount_of_times(self):
-        return len(self.times)
+        self.halls = halls
+    def amount_of_combos(self):
+        return len(self.times)*len(self.halls)
 
 class Group(object):
-    def __init__(self, time):
+    def __init__(self, time, hall):
         self.people = []
         self.time = time
+        self.hall = hall
 
     def size(self):
         return len(self.people)
@@ -19,13 +21,14 @@ class Group(object):
 
 # structure for availbaility list
 class Availability(object):
-    def __init__(self,time):
+    def __init__(self, time, hall):
         self.time = time
+        self.hall = hall
         self.amount = 0
 
 # global availability list, list of availabilities
 # 5pm,6pm and 7pm respectively
-availability_list = [Availability(5), Availability(6), Availability(7)]
+availability_list = []
 
 # global list of people , sorted by the number of available times
 people_list = []
@@ -33,10 +36,15 @@ people_list = []
 #global list of groups
 group_list = []
 
-#populates possible times list
+#populates possible times list(MUST BE MORE THAN 3 TIMES)
 def gettimes():
     times = [5,6,7]
     return times
+
+#populates possible hall list
+def gethalls():
+    halls = ["De Neve", "Covel", "BPlate"]
+    return halls
 
 #todo: make first names all uppercase or last names capitalized then lowercase
 #populates potential first name list
@@ -67,6 +75,7 @@ def getPeople(numOfPeeps):
     timeList = gettimes()
     firstNames = getfirst()
     lastNames = getlast()
+    hallList = gethalls()
     people = []
     for i in range(0, numOfPeeps):
         name = firstNames[random.randint(0, len(firstNames) - 1)]
@@ -84,19 +93,42 @@ def getPeople(numOfPeeps):
                 rand3 = random.randint(0, len(timeList) - 1)
             if random.randint(0,1) == 0: #50% chance to have 3 if already has 2
                times.append(timeList[rand3])
+        halls = []
+        rnd1 = random.randint(0, len(hallList) - 1)
+        halls.append(hallList[rnd1])
+        rnd2 = rnd1
+        while rnd2 == rnd1:
+            rnd2 = random.randint(0, len(hallList) - 1)
+        if random.randint(0,1) == 0:
+            halls.append(hallList[rnd2])
+            rnd3 = rnd1
+            while rnd3 == rnd1 or rnd3 == rnd2:
+                rnd3 = random.randint(0, len(hallList) - 1)
+            if random.randint(0,1) == 0:
+                halls.append(hallList[rnd3])
         name = name + " " + surname
-        print(name)
-        print(times)
-        x = Person(name, times)
+        print(name, " wants to meet at ", times, " and halls ", halls)
+        x = Person(name, times, halls)
         people.append(x)
     return people
 
-def createAtyList(peeps):
+def createAtyList(times, halls):
+    if(len(availability_list) != 0):
+        print("Are you sure there bro, theres stuff in the availability list")
+    for time in times:
+        for hall in halls:
+            x = Availability(time, hall)
+            availability_list.append(x)
+
+#make this better with if * in *
+def populateAtyList(peeps):
     for peep in peeps: #for each person
         for time in peep.times: #for each time they are available
-            for a in availability_list:
-                if a.time == time:
-                    a.amount = a.amount + 1
+            for hall in peep.halls: #for each hall they are available
+                for a in availability_list: #for each possible time
+                    if a.time == time and a.hall == hall: #check to make sure its a perfect match
+                        a.amount = a.amount + 1
+                        #break prob good here idk python though
 
 def insert_into_groups(person):
     unfinished_group_list = []
@@ -110,11 +142,12 @@ def insert_into_groups(person):
         if (group.size() < 4):
             # if the group's time coincides with the person's time
             for time in person.times:
-                if (group.time == time):
-                    # add it to the unfinished gruop list
-                    unfinished_group_list.append(group)
-                    #  break this loop
-                    break
+                for hall in person.halls:
+                    if (group.time == time) and (group.hall == hall):
+                        # add it to the unfinished gruop list
+                        unfinished_group_list.append(group)
+                        #  break this loop
+                        break
 
     # if there are unfinished groups
     if (len(unfinished_group_list) != 0):
@@ -132,7 +165,8 @@ def insert_into_groups(person):
         possibile_availabilities = []
         for availability in availability_list:
             if availability.time in person.times:
-                possibile_availabilities.append(availability)
+                if availability.hall in person.halls:
+                    possibile_availabilities.append(availability)
 
         # get the max availability out of all possibile
         max_availability = possibile_availabilities[0]
@@ -141,22 +175,25 @@ def insert_into_groups(person):
                 max_availability = availability
 
         # add person to new group with time with max availability
-        new_group = Group(max_availability.time);
+        new_group = Group(max_availability.time, max_availability.hall);
         new_group.people.append(person)
         group_list.append(new_group)
 
-#todo: sort peeps by len(times) in ascending order
-peeps = getPeople(12)
-peeps.sort(key=operator.methodcaller("amount_of_times"), reverse=False)
-createAtyList(peeps)
+
+peeps = getPeople(60)
+peeps.sort(key=operator.methodcaller("amount_of_combos"), reverse=False)
+createAtyList(gettimes(), gethalls())
+populateAtyList(peeps)
 for peep in peeps:
     insert_into_groups(peep)
 counter = 0
 for group in group_list:
-    print ("GROUP ", counter, " at ", group.time, " has ")
-    counter = counter + 1
+    print("GROUP ", counter, " at ", group.hall, group.time, ":")
+    counter = counter +1
     for peep in group.people:
-        print(peep.name, "who had times", peep.times)
+        print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls)
+
+
 
 
 
