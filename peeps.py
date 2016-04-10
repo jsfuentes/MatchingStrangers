@@ -1,4 +1,5 @@
 import random
+import operator
 #person with first and last name in name and time list
 class Person:
     def __init__(self,names,times):
@@ -146,6 +147,7 @@ def insert_into_groups(person):
 
 #todo: sort peeps by len(times) in ascending order
 peeps = getPeople(12)
+peeps.sort(key=operator.methodcaller("amount_of_times"), reverse=False)
 createAtyList(peeps)
 for peep in peeps:
     insert_into_groups(peep)
