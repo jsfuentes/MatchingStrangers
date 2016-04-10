@@ -214,6 +214,7 @@ def insertSwipersAndSwipees(peeps):
                                 newGroup = Group(neederTime, neederHall)
                                 newGroup.people.append(giver)
                                 newGroup.people.append(needer)
+                                group_list.append(newGroup)
                                 foundGroup = True
                             peeps.remove(giver) #remove the giver and needer from every list to avoid duplicates
                             peeps.remove(needer)
@@ -232,6 +233,7 @@ def insertSwipersAndSwipees(peeps):
             if not foundGroup:
                 newGroup = Group(8, "Covel")
                 newGroup.people.append(needer)
+                group_list.append(newGroup)
                 foundGroup = True
             swipees.remove(needer)
             peeps.remove(needer)
@@ -241,8 +243,9 @@ def test(people):
     peeps = people
 #    random.shuffle(peeps)
  #   random.shuffle(peeps)
+    print (len(people))
     peeps.sort(key=operator.methodcaller("amount_of_combos"), reverse=False)
-    insertSwipersAndSwipees(peeps)
+
     createAtyList(gettimes(), gethalls())
     populateAtyList(peeps)
     for peep in peeps:
@@ -261,5 +264,5 @@ def test(people):
         for peep in group.people:
             print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls, peep.swipes)
 
-test(getPeople(100))
+test(getPeople(8))
 
