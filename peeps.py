@@ -206,7 +206,7 @@ def insertSwipersAndSwipees(peeps):
                     for neederTime in needer.times: #check every times to see matchs
                         if neederTime in giver.times:
                             for group in group_list: #check every group to see if an unfinished one that is similar exists
-                                if group.time == neederTime and group.hall == neederHall and len(group.people) < 4:
+                                if group.time == neederTime and group.hall == neederHall and len(group.people) < 3:
                                     group.people.append(giver)
                                     group.people.append(needer)
                                     foundGroup = True
