@@ -38,7 +38,7 @@ availability_list = []
 people_list = []
 
 #global list of groups
-group_list = [Group(5, "De Neve"), Group(6, "De Neve"), Group(7, "De Neve"), Group(5, "B-Plate"), Group(6, "B-Plate"), Group(7, "B-Plate"), Group(5, "Covel"), Group(6, "Covel"), Group(7, "Covel"), Group(8,"Covel")]
+group_list = []
 
 #populates possible times list(MUST BE MORE THAN 3 TIMES)
 def gettimes():
@@ -110,9 +110,15 @@ def getPeople(numOfPeeps):
                 rnd3 = random.randint(0, len(hallList) - 1)
             if random.randint(0,1) == 0:
                 halls.append(hallList[rnd3])
+        swipe = "#getonmylevel"
+        swipeRand = random.randint(0,2)
+        if swipeRand == 0:
+            swipe = "im good"
+        elif swipeRand == 1:
+            swipe = "#thestruggle"
         name = name + " " + surname
-        print(name, times, halls)
-        x = Person(name, times, halls, 6616616661,"i like pie","getonmylevel")
+        print(name, times, halls, swipe)
+        x = Person(name, times, halls, 6616616661,"i like pie",swipe)
         people.append(x)
     return people
 
@@ -183,11 +189,59 @@ def insert_into_groups(person):
         new_group.people.append(person)
         group_list.append(new_group)
 
+#this method should be ran on the list of people before inserting them into groups normally
+def insertSwipersAndSwipees(peeps):
+    swipers = []
+    swipees = []
+    for peep in peeps:
+        if "#thestruggle" in peep.swipes:
+            swipees.append(peep)
+        elif "#getonmylevel" in peep.swipes:
+            swipers.append(peep)
+    for needer in swipees: # for every person who needs a swipe
+        foundGroup = False # at this point we have a match of times and halls
+        for giver in swipers: # for every person who can give a swipe
+            for neederHall in needer.halls: #for every hall the person needs a swipe
+                if neederHall in giver.halls: #if the giver wants that hall
+                    for neederTime in needer.times: #check every times to see matchs
+                        if neederTime in giver.times:
+                            for group in group_list: #check every group to see if an unfinished one that is similar exists
+                                if group.time == neederTime and group.hall == neederHall and len(group.people) < 4:
+                                    group.people.append(giver)
+                                    group.people.append(needer)
+                                    foundGroup = True
+                            if not foundGroup:
+                                newGroup = Group(neederTime, neederHall)
+                                newGroup.people.append(giver)
+                                newGroup.people.append(needer)
+                            peeps.remove(giver) #remove the giver and needer from every list to avoid duplicates
+                            peeps.remove(needer)
+                            swipers.remove(giver)
+                            swipees.remove(needer)
+                            break # breaks for neederTime
+                    if foundGroup:
+                        break #breaks for neederHall
+            if foundGroup:
+                break #breaks for giver in swipers which will start at next
+        if not foundGroup: #if after checking all the swpers there is no match
+            for group in group_list:
+                if group.hall == "Covel" and group.time == 8 and len(group.people) < 4:
+                    group.people.append(needer)
+                    foundGroup = True
+            if not foundGroup:
+                newGroup = Group(8, "Covel")
+                newGroup.people.append(needer)
+                foundGroup = True
+            swipees.remove(needer)
+            peeps.remove(needer)
+
+
 def test(people):
     peeps = people
 #    random.shuffle(peeps)
  #   random.shuffle(peeps)
     peeps.sort(key=operator.methodcaller("amount_of_combos"), reverse=False)
+    insertSwipersAndSwipees(peeps)
     createAtyList(gettimes(), gethalls())
     populateAtyList(peeps)
     for peep in peeps:
@@ -206,6 +260,5 @@ def test(people):
         for peep in group.people:
             print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls, peep.swipes)
 
-
-
+test(getPeople(10))
 

@@ -2,7 +2,7 @@ __author__ = 'mitrikyle'
 import xlrd
 from peeps import Person
 import peeps
-workbook = xlrd.open_workbook('pythonmoddedform.xlsx')
+workbook = xlrd.open_workbook('test.xlsx')
 
 worksheet = workbook.sheet_by_index(0)
 
