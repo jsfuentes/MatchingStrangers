@@ -2,10 +2,12 @@ import random
 import operator
 #person with first and last name in name and time list
 class Person:
-    def __init__(self,names,times,halls):
+    def __init__(self,names,times,halls, number):
         self.name = names
         self.times = times
         self.halls = halls
+        self.number = number
+
     def amount_of_combos(self):
         return len(self.times)*len(self.halls)
 
@@ -38,12 +40,12 @@ group_list = [Group(7, "De Neve")]
 
 #populates possible times list(MUST BE MORE THAN 3 TIMES)
 def gettimes():
-    times = [5,6,7]
+    times = [5,6,7,8]
     return times
 
 #populates possible hall list
 def gethalls():
-    halls = ["De Neve", "Covel", "BPlate"]
+    halls = ["De Neve", "Covel", "B-Plate"]
     return halls
 
 #todo: make first names all uppercase or last names capitalized then lowercase
@@ -108,7 +110,7 @@ def getPeople(numOfPeeps):
                 halls.append(hallList[rnd3])
         name = name + " " + surname
         print(name, times, halls)
-        x = Person(name, times, halls)
+        x = Person(name, times, halls, 6616616661)
         people.append(x)
     return people
 
@@ -179,26 +181,26 @@ def insert_into_groups(person):
         new_group.people.append(person)
         group_list.append(new_group)
 
-
-peeps = getPeople(74)
-peeps.sort(key=operator.methodcaller("amount_of_combos"), reverse=False)
-createAtyList(gettimes(), gethalls())
-populateAtyList(peeps)
-for peep in peeps:
-    insert_into_groups(peep)
-counter = 0
-unfinished = []
-for group in group_list:
-    print("GROUP ", counter, " at ", group.hall, group.time, ":")
-    counter = counter +1
-    if group.size() < 4:
-        unfinished.append(group)
-    for peep in group.people:
-        print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls)
-for group in unfinished:
-    print("GROUP at ", group.hall, group.time, ":")
-    for peep in group.people:
-        print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls)
+def test(people):
+    peeps = people
+    peeps.sort(key=operator.methodcaller("amount_of_combos"), reverse=False)
+    createAtyList(gettimes(), gethalls())
+    populateAtyList(peeps)
+    for peep in peeps:
+        insert_into_groups(peep)
+    counter = 0
+    unfinished = []
+    for group in group_list:
+        print("GROUP ", counter, " at ", group.hall, group.time, ":")
+        counter = counter +1
+        if group.size() < 4:
+            unfinished.append(group)
+        for peep in group.people:
+            print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls)
+    for group in unfinished:
+        print("GROUP at ", group.hall, group.time, ":")
+        for peep in group.people:
+            print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls)
 
 
 
