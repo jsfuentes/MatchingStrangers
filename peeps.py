@@ -245,7 +245,7 @@ def test(people):
  #   random.shuffle(peeps)
     print (len(people))
     peeps.sort(key=operator.methodcaller("amount_of_combos"), reverse=False)
-
+    insertSwipersAndSwipees(peeps)
     createAtyList(gettimes(), gethalls())
     populateAtyList(peeps)
     for peep in peeps:
