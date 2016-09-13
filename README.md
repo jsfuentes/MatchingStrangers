@@ -1,9 +1,10 @@
 # MatchingStrangers
-Given a list of people with avaliable times and dining halls, how do you efficiently and reliably match everyone in groups of 4.
-This code was used for the several dining for 4 strangers event held at UCLA for around 80 people.
+Problem:
+This code was needed for the several Dinner for 4 Strangers events held at UCLA for around 80 people. Given a list of people with avaliable times and dining halls, how do you efficiently and reliably match everyone in groups of 4?
 
-Rundown of algorithm:
+
+Overview of algorithm:
 Each person has an "availability number" corresponding to their dining halls * times
 The algorithm puts people in groups in ascending order based on their number
-  prioritizes unfinished groups
+  prioritizes unfinished groups(you can create empty groups before running the algorithm that will be filled)
   new groups are created in the most popular time slots left to have the best chance of being completed
