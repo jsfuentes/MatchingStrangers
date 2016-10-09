@@ -28,7 +28,9 @@ class Person:
 
 #times must have the first letter by the # desired
 #parameters are in the following order:
-#row excelsheet, tuplerow, tuplenames,  column of times, column of dinings, column of halls
+#workbook, sheet, tuplerow, tuplenames,  tupletimes, tupledinings, tuplehalls, tuple of tuplesnewVars
+#tuples are the start col to the end col
+#tuple of tuples are in the form name and row(multiple rows not allowed)
 def excel_to_personlist(wbName='Fall-2016-DF4S-report.xlsx', sheetName = 'results', rows=(3, 108), nameCol=(2,4), timeCol=(14,18), dinCol=(8,14), hallCol=6, newVars=(("Email", 4), ("Phone Number", 5))):
     wb = openpyxl.load_workbook(wbName)
     sheet = wb.get_sheet_by_name(sheetName)

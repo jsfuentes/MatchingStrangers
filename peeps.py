@@ -1,17 +1,8 @@
 import random
 import operator
-import openpyxl
+import excelParser as exPar
 
-#person with first and last name in name and time list
-class Person:
-    def __init__(self,names,times,dinings,hall):
-        self.name = names
-        self.times = times
-        self.dinings = dinings
-        self.hall = hall
-    def amount_of_combos(self):
-        return len(self.times)*len(self.dinings)
-
+#person defined in excelParser
 class Group(object):
     def __init__(self, time, dining):
         self.people = []
@@ -20,6 +11,15 @@ class Group(object):
 
     def size(self):
         return len(self.people)
+
+    def  __str__(self):
+        returnStr = "GROUP "
+        if hasattr(self, 'counter'):
+            returnStr += str(self.counter) + " "
+        return returnStr + "is at %s in %s" % (self.time, self.dining)
+
+
+
 
 
 # structure for availability list
@@ -40,12 +40,12 @@ group_list = [Group(7, "De Neve")]
 
 #populates possible times list(MUST BE MORE THAN 3 TIMES)
 def gettimes():
-    times = [5,6,7]
+    times = [5,6,7,8]
     return times
 
 #populates possible dining list
 def getdinings():
-    dinings = ["De Neve", "Covel", "BPlate"]
+    dinings = ["De Neve", "Covel", "B-Plate", "Feast", "Rendezvous"]
     return dinings
 
 #populates possible hall list
@@ -124,8 +124,6 @@ def getRandoms(numOfPeeps):
         people.append(x)
     return people
 
-
-
 def createAtyList(times, dinings):
     if(len(availability_list) != 0):
         print("Are you sure there bro, theres stuff in the availability list")
@@ -194,7 +192,7 @@ def insert_into_groups(person):
         group_list.append(new_group)
 
 def main():
-    peeps = getRandoms(74)
+    peeps = exPar.excel_to_personlist()
     peeps.sort(key=operator.methodcaller("amount_of_combos"), reverse=False)
     createAtyList(gettimes(), getdinings())
     populateAtyList(peeps)
@@ -203,17 +201,19 @@ def main():
     counter = 0
     unfinished = []
     for group in group_list:
-        print("GROUP ", counter, " at ", group.dining, group.time, ":")
-        counter = counter +1
+        #adds # to group for easier identification
+        group.counter = counter
+        print group
+        counter = counter + 1
         if group.size() < 4:
             unfinished.append(group)
         for peep in group.people:
-            print(peep.name, "had times: ", peep.times, "and dinings: ", peep.dinings, "and hall:", peep.hall)
+            print peep
     print("UNFINISHED GROUPS")
     for group in unfinished:
-        print("GROUP at ", group.dining, group.time, ":")
+        print group
         for peep in group.people:
-            print(peep.name, "had times: ", peep.times, "and dinings: ", peep.dinings, "and hall:", peep.hall)
+            print peep
 
 if __name__ == "__main__":
     main()
