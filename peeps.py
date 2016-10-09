@@ -200,20 +200,21 @@ def main():
         insert_into_groups(peep)
     counter = 0
     unfinished = []
+    groupDoc = open("groups.txt","w")
     for group in group_list:
         #adds # to group for easier identification
         group.counter = counter
-        print group
+        groupDoc.write(group.__str__() + "\n")
         counter = counter + 1
         if group.size() < 4:
             unfinished.append(group)
         for peep in group.people:
-            print peep
-    print("UNFINISHED GROUPS")
+            groupDoc.write(peep.__str__() + "\n")
+    groupDoc.write("UNFINISHED GROUPS" + "\n")
     for group in unfinished:
-        print group
+        groupDoc.write(group.__str__() + "\n")
         for peep in group.people:
-            print peep
+            groupDoc.write(peep.__str__() + "\n")
 
 if __name__ == "__main__":
     main()
