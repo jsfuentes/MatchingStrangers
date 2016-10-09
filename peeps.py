@@ -2,18 +2,19 @@ import random
 import operator
 #person with first and last name in name and time list
 class Person:
-    def __init__(self,names,times,halls):
+    def __init__(self,names,times,dinings,hall):
         self.name = names
         self.times = times
-        self.halls = halls
+        self.dinings = dinings
+        self.hall = hall
     def amount_of_combos(self):
-        return len(self.times)*len(self.halls)
+        return len(self.times)*len(self.dinings)
 
 class Group(object):
-    def __init__(self, time, hall):
+    def __init__(self, time, dining):
         self.people = []
         self.time = time
-        self.hall = hall
+        self.dining = dining
 
     def size(self):
         return len(self.people)
@@ -21,16 +22,15 @@ class Group(object):
 
 # structure for availbaility list
 class Availability(object):
-    def __init__(self, time, hall):
+    def __init__(self, time, dining):
         self.time = time
-        self.hall = hall
+        self.dining = dining
         self.amount = 0
 
 # global availability list, list of availabilities
-# 5pm,6pm and 7pm respectively
 availability_list = []
 
-# global list of people , sorted by the number of available times
+# global list of people , needs to be sorted by the number of available times
 people_list = []
 
 #global list of groups
@@ -41,9 +41,17 @@ def gettimes():
     times = [5,6,7]
     return times
 
+#populates possible dining list
+def getdinings():
+    dinings = ["De Neve", "Covel", "BPlate"]
+    return dinings
+
 #populates possible hall list
 def gethalls():
-    halls = ["De Neve", "Covel", "BPlate"]
+    halls = ["Acacia", "Birch", "Canyon Point", "Cedar", "Courtside",
+    "Delta Terrace", "Dogwood", "Dykstra Hall", "Evergreen", "Fir", "Gardenia",
+    "Hedrick Hall", "Hedrick Summit", "Hitch", "Holly", "Rieber Hall", "Rieber Vista",
+    "Rieber Terrace", "Saxon", "Sproul Cove", "Sproul Hall", "Sproul Landing", "Sunset Village"]
     return halls
 
 #todo: make first names all uppercase or last names capitalized then lowercase
@@ -75,6 +83,7 @@ def getPeople(numOfPeeps):
     timeList = gettimes()
     firstNames = getfirst()
     lastNames = getlast()
+    diningList = getdinings()
     hallList = gethalls()
     people = []
     for i in range(0, numOfPeeps):
@@ -93,40 +102,41 @@ def getPeople(numOfPeeps):
                 rand3 = random.randint(0, len(timeList) - 1)
             if random.randint(0,1) == 0: #50% chance to have 3 if already has 2
                times.append(timeList[rand3])
-        halls = []
-        rnd1 = random.randint(0, len(hallList) - 1)
-        halls.append(hallList[rnd1])
+        dinings = []
+        rnd1 = random.randint(0, len(diningList) - 1)
+        dinings.append(diningList[rnd1])
         rnd2 = rnd1
         while rnd2 == rnd1:
-            rnd2 = random.randint(0, len(hallList) - 1)
+            rnd2 = random.randint(0, len(diningList) - 1)
         if random.randint(0,1) == 0:
-            halls.append(hallList[rnd2])
+            dinings.append(diningList[rnd2])
             rnd3 = rnd1
             while rnd3 == rnd1 or rnd3 == rnd2:
-                rnd3 = random.randint(0, len(hallList) - 1)
+                rnd3 = random.randint(0, len(diningList) - 1)
             if random.randint(0,1) == 0:
-                halls.append(hallList[rnd3])
+                dinings.append(diningList[rnd3])
+        hall = hallList[random.randint(0, len(hallList) - 1)]
         name = name + " " + surname
-        print(name, times, halls)
-        x = Person(name, times, halls)
+        print(name, times, dinings, hall)
+        x = Person(name, times, dinings, hall)
         people.append(x)
     return people
 
-def createAtyList(times, halls):
+def createAtyList(times, dinings):
     if(len(availability_list) != 0):
         print("Are you sure there bro, theres stuff in the availability list")
     for time in times:
-        for hall in halls:
-            x = Availability(time, hall)
+        for dining in dinings:
+            x = Availability(time, dining)
             availability_list.append(x)
 
 #make this better with if * in *
 def populateAtyList(peeps):
     for peep in peeps: #for each person
         for time in peep.times: #for each time they are available
-            for hall in peep.halls: #for each hall they are available
-                for a in availability_list: #for each possible time
-                    if a.time == time and a.hall == hall: #check to make sure its a perfect match
+            for dining in peep.dinings: #for each dining they are available
+                for a in availability_list: #compare to every availablity list elements
+                    if a.time == time and a.dining == dining: #check to make sure its a perfect match
                         a.amount = a.amount + 1
                         #break prob good here idk python though
 
@@ -142,8 +152,8 @@ def insert_into_groups(person):
         if (group.size() < 4):
             # if the group's time coincides with the person's time
             for time in person.times:
-                for hall in person.halls:
-                    if (group.time == time) and (group.hall == hall):
+                for dining in person.dinings:
+                    if (group.time == time) and (group.dining == dining):
                         # add it to the unfinished gruop list
                         unfinished_group_list.append(group)
                         #  break this loop
@@ -151,12 +161,12 @@ def insert_into_groups(person):
 
     # if there are unfinished groups
     if (len(unfinished_group_list) != 0):
-        # find the one with least availbable people
+        # find the group with someone in the same hall as you
         chosen_group = unfinished_group_list[0]
         for group in unfinished_group_list:
-            if (availability_list[group.time-5].amount < availability_list[chosen_group.time-5].amount):
-                chosen_group = group
-
+            for peep in group.people:
+                if peep.hall == person.hall:
+                    chosen_group = group
         # put the person in that one
         chosen_group.people.append(person)
     # no unfinished groups
@@ -165,7 +175,7 @@ def insert_into_groups(person):
         possibile_availabilities = []
         for availability in availability_list:
             if availability.time in person.times:
-                if availability.hall in person.halls:
+                if availability.dining in person.dinings:
                     possibile_availabilities.append(availability)
 
         # get the max availability out of all possibile
@@ -175,33 +185,28 @@ def insert_into_groups(person):
                 max_availability = availability
 
         # add person to new group with time with max availability
-        new_group = Group(max_availability.time, max_availability.hall);
+        new_group = Group(max_availability.time, max_availability.dining);
         new_group.people.append(person)
         group_list.append(new_group)
 
 
 peeps = getPeople(74)
 peeps.sort(key=operator.methodcaller("amount_of_combos"), reverse=False)
-createAtyList(gettimes(), gethalls())
+createAtyList(gettimes(), getdinings())
 populateAtyList(peeps)
 for peep in peeps:
     insert_into_groups(peep)
 counter = 0
 unfinished = []
 for group in group_list:
-    print("GROUP ", counter, " at ", group.hall, group.time, ":")
+    print("GROUP ", counter, " at ", group.dining, group.time, ":")
     counter = counter +1
     if group.size() < 4:
         unfinished.append(group)
     for peep in group.people:
-        print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls)
+        print(peep.name, "had times: ", peep.times, "and dinings: ", peep.dinings, "and hall:", peep.hall)
+print("UNFINISHED GROUPS")
 for group in unfinished:
-    print("GROUP at ", group.hall, group.time, ":")
+    print("GROUP at ", group.dining, group.time, ":")
     for peep in group.people:
-        print(peep.name, "had times: ", peep.times, "and halls: ", peep.halls)
-
-
-
-
-
-
+        print(peep.name, "had times: ", peep.times, "and dinings: ", peep.dinings, "and hall:", peep.hall)
