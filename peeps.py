@@ -1,5 +1,7 @@
 import random
 import operator
+import openpyxl
+
 #person with first and last name in name and time list
 class Person:
     def __init__(self,names,times,dinings,hall):
@@ -20,7 +22,7 @@ class Group(object):
         return len(self.people)
 
 
-# structure for availbaility list
+# structure for availability list
 class Availability(object):
     def __init__(self, time, dining):
         self.time = time
@@ -33,7 +35,7 @@ availability_list = []
 # global list of people , needs to be sorted by the number of available times
 people_list = []
 
-#global list of groups
+#global list of groups, add groups here to seed program and control time/group location if possible(Group(time, "hall"))
 group_list = [Group(7, "De Neve")]
 
 #populates possible times list(MUST BE MORE THAN 3 TIMES)
@@ -78,8 +80,8 @@ def getlast():
     print(names)
     return names
 
-#creates random people with random names and random times
-def getPeople(numOfPeeps):
+#creates random people with random names, times, halls, and dinings
+def getRandoms(numOfPeeps):
     timeList = gettimes()
     firstNames = getfirst()
     lastNames = getlast()
@@ -121,6 +123,8 @@ def getPeople(numOfPeeps):
         x = Person(name, times, dinings, hall)
         people.append(x)
     return people
+
+
 
 def createAtyList(times, dinings):
     if(len(availability_list) != 0):
@@ -189,24 +193,27 @@ def insert_into_groups(person):
         new_group.people.append(person)
         group_list.append(new_group)
 
+def main():
+    peeps = getRandoms(74)
+    peeps.sort(key=operator.methodcaller("amount_of_combos"), reverse=False)
+    createAtyList(gettimes(), getdinings())
+    populateAtyList(peeps)
+    for peep in peeps:
+        insert_into_groups(peep)
+    counter = 0
+    unfinished = []
+    for group in group_list:
+        print("GROUP ", counter, " at ", group.dining, group.time, ":")
+        counter = counter +1
+        if group.size() < 4:
+            unfinished.append(group)
+        for peep in group.people:
+            print(peep.name, "had times: ", peep.times, "and dinings: ", peep.dinings, "and hall:", peep.hall)
+    print("UNFINISHED GROUPS")
+    for group in unfinished:
+        print("GROUP at ", group.dining, group.time, ":")
+        for peep in group.people:
+            print(peep.name, "had times: ", peep.times, "and dinings: ", peep.dinings, "and hall:", peep.hall)
 
-peeps = getPeople(74)
-peeps.sort(key=operator.methodcaller("amount_of_combos"), reverse=False)
-createAtyList(gettimes(), getdinings())
-populateAtyList(peeps)
-for peep in peeps:
-    insert_into_groups(peep)
-counter = 0
-unfinished = []
-for group in group_list:
-    print("GROUP ", counter, " at ", group.dining, group.time, ":")
-    counter = counter +1
-    if group.size() < 4:
-        unfinished.append(group)
-    for peep in group.people:
-        print(peep.name, "had times: ", peep.times, "and dinings: ", peep.dinings, "and hall:", peep.hall)
-print("UNFINISHED GROUPS")
-for group in unfinished:
-    print("GROUP at ", group.dining, group.time, ":")
-    for peep in group.people:
-        print(peep.name, "had times: ", peep.times, "and dinings: ", peep.dinings, "and hall:", peep.hall)
+if __name__ == "__main__":
+    main()
