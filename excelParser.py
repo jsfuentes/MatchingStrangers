@@ -1,6 +1,4 @@
 import openpyxl
-
-#person
 class Person:
     def __init__(self,names,times,dinings,hall):
         self.name = names
@@ -23,8 +21,6 @@ class Person:
         return "%s from %s wanted %s at %s%s" % (self.name, self.hall, dineStr, timeStr, newVariablesStr)
     def amount_of_combos(self):
         return len(self.times)*len(self.dinings)
-
-
 
 #times must have the first letter by the # desired
 #parameters are in the following order:

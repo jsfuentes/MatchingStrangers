@@ -2,7 +2,7 @@ import random
 import operator
 import excelParser as exPar
 
-#person defined in excelParser
+#person defined in excelParser-
 class Group(object):
     def __init__(self, time, dining):
         self.people = []
